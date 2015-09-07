@@ -368,7 +368,12 @@ module.exports = function(grunt) {
       options.platforms.forEach(function (requestedPlatform) {
           if (isPlatformRequested(requestedPlatform, "win32")) {
             var p = path.join(options.build_dir, platform, "electron", "electron.exe")
-            exec("rcedit "+p+" --set-icon "+options.windowsIcon);
+            var p2 = path.join(options.build_dr, platform, "electron", "resources", "icon.ico")
+
+            fs.copySync(options.windows_icon, path.join(options.build_dir, platform, "electron", "resources", "icon.ico")
+
+            // Requires the 'rcedit' command created by the Atom team.
+            exec("rcedit "+p+" --set-icon "+p2);
           }
       });
     }
