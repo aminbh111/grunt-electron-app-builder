@@ -14,6 +14,7 @@ var async = require('async');
 var wrench = require('wrench');
 var decompressZip = require('decompress-zip');
 var progress = require('progress');
+var exec = require('sync-exec');
 var _ = require('lodash');
 
 module.exports = function(grunt) {
@@ -65,6 +66,9 @@ module.exports = function(grunt) {
                 function(callback) {
                     setLinuxPermissions(options, callback);
                 },
+                function(callback) {
+                    setWindowsAppIcon(options, callback);
+                }
             ], function(err) { if (err) throw err; done(); }
 
         );
@@ -354,5 +358,18 @@ module.exports = function(grunt) {
         });
 
         callback();
+    },
+
+    setWindowsAppIcon: function(options, callback) {
+      if(!options.windowsIcon) {
+        callback();
+        return;
+      }
+      options.platforms.forEach(function (requestedPlatform) {
+          if (isPlatformRequested(requestedPlatform, "win32")) {
+            var p = path.join(options.build_dir, platform, "electron", "electron.exe")
+            exec("rcedit "+p+" --set-icon "+options.windowsIcon);
+          }
+      });
     }
 };
