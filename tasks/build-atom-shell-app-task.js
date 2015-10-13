@@ -74,7 +74,7 @@ module.exports = function(grunt) {
         async.eachSeries(options.platforms, function(platform, localcallback) {
           if (['linux', 'linux32', 'linux64'].indexOf(platform) != -1 && process.platform == 'linux') {
               var p = path.join(options.build_dir, platform, "electron", "resources", "app")
-            
+
               if(fs.existsSync(p)) {
                 grunt.log.success("app dir exists");
                 fs.chmodSync(p, 0755);
@@ -84,7 +84,7 @@ module.exports = function(grunt) {
                 grunt.log.success("app archive exists");
                 fs.chmodSync(p+".asar", 0755);
               }
-              
+
               if(fs.existsSync(p+".asar.unpacked")) {
                 grunt.log.success("app unpacked dir exists");
                 fs.chmodSync(p+".asar.unpacked", 0755);
@@ -149,7 +149,7 @@ module.exports = function(grunt) {
     {
         var cachedReleaseInfoFile = path.join(options.cache_dir, 'package-info-'+options.electron_version+'.json');
         var cachedReleaseInfo;
-        
+
         if (responseBody)
         {
             var releaseInfo = _.find(responseBody, {'tag_name' : options.electron_version });
@@ -167,7 +167,7 @@ module.exports = function(grunt) {
             } catch(e) {
                 // could not find release info
             }
-          
+
             if (cachedReleaseInfo) {
                 callback(null, options, cachedReleaseInfo);
             } else {
@@ -191,12 +191,12 @@ module.exports = function(grunt) {
                         {
                             callback(new Error("Could not find a release with tag " + options.electron_version));
                         }
-                    
+
                         grunt.file.write(cachedReleaseInfoFile, JSON.stringify(releaseInfo));
                         callback(null, options, releaseInfo);
                     }
                 );
-            } 
+            }
         }
     }
 
@@ -314,11 +314,11 @@ module.exports = function(grunt) {
     function isPlatformRequested(requestedPlatform, platform) {
         return requestedPlatform.indexOf(platform) != -1;
     }
-    
+
     function removeDefaultApp(options, callback)
     {
         grunt.log.subhead("Removing default_app.")
-      
+
         options.platforms.forEach(function (requestedPlatform) {
           var buildOutputDir = path.join(options.build_dir, requestedPlatform, "electron");
           var defaultApp = path.join(buildOutputDir, "resources", "default_app");
@@ -368,12 +368,13 @@ module.exports = function(grunt) {
                   excludeHiddenUnix: true,
                   preserveFiles: false,
                   preserveTimestamps: true,
-                  inflateSymlinks: true
+                  inflateSymlinks: true,
+		              exclude:"node_modules"
               });
             } else if (appDirStats.isFile() && options.app_dir.indexOf('.asar') !== -1) {
               grunt.log.ok("App is packed as .asar")
               fs.copySync(options.app_dir, appOutputDir+'.asar');
-              
+
               if (fs.existsSync(options.app_dir + ".unpacked")) {
                 fs.copySync(options.app_dir + ".unpacked", appOutputDir+'.asar.unpacked');
               }
